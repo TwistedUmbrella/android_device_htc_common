@@ -23,6 +23,10 @@ DEVICE_PACKAGE_OVERLAYS := device/htc/common/overlay
 # Sets copy files for all HTC-specific device
 PRODUCT_COPY_FILES += device/htc/common/ecclist_for_mcc.conf:system/etc/ecclist_for_mcc.conf
 
+# HTC-specific calibration that spans all board types
+PRODUCT_COPY_FILES += \
+    device/htc/common/prebuilt/etc/init.local.rc:system/etc/init.local.rc
+
 # Get additional product configuration from the non-open-source
 # counterpart to this file, if it exists
 $(call inherit-product-if-exists, vendor/htc/common/common-vendor.mk)
