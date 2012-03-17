@@ -25,7 +25,7 @@ PRODUCT_COPY_FILES += device/htc/common/ecclist_for_mcc.conf:system/etc/ecclist_
 
 # HTC-specific calibration that spans all board types
 PRODUCT_COPY_FILES += \
-    device/htc/common/prebuilt/etc/init.local.rc:system/etc/init.local.rc
+    device/htc/common/prebuilt/kernel/init.htc.kernel.rc:root/init.htc.kernel.rc
 
 # Get additional product configuration from the non-open-source
 # counterpart to this file, if it exists

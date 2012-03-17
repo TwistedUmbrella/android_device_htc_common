@@ -1,5 +1,3 @@
-# Additional shared functions that contain exceptions
-
 on boot
 # allow system to modify ksm control files
     chown root system /sys/kernel/mm/ksm/pages_to_scan
