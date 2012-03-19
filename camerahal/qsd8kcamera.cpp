@@ -479,7 +479,7 @@ int start_preview(struct camera_device * device)
    LOGE("start_preview: Enabling CAMERA_MSG_PREVIEW_FRAME");
 
    /* TODO: Remove hack. */
-   qCamera->enableMsgType(CAMERA_MSG_PREVIEW_FRAME);
+   //qCamera->enableMsgType(CAMERA_MSG_PREVIEW_FRAME);
    return qCamera->startPreview();
 }
 
@@ -488,7 +488,7 @@ void stop_preview(struct camera_device * device)
    LOGE("stop_preview:");
 
    /* TODO: Remove hack. */
-   qCamera->disableMsgType(CAMERA_MSG_PREVIEW_FRAME);
+   //qCamera->disableMsgType(CAMERA_MSG_PREVIEW_FRAME);
    return qCamera->stopPreview();
 }
 
