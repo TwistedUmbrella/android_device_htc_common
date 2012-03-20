@@ -35,7 +35,7 @@
 #include <camera/CameraParameters.h>
 #include <hardware/camera.h>
 #include <binder/IMemory.h>
-#include "CameraHardwareInterface.h"
+#include "7x30camera.h"
 #include <cutils/properties.h>
 
 using android::sp;
