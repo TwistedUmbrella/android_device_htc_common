@@ -22,7 +22,7 @@
 
 #define LOG_TAG "CameraHAL"
 
-#define MAX_CAMERAS_SUPPORTED 2
+#define MAX_CAMERAS_SUPPORTED 3
 #define GRALLOC_USAGE_PMEM_PRIVATE_ADSP GRALLOC_USAGE_PRIVATE_0
 
 #include <fcntl.h>
@@ -31,15 +31,19 @@
 #include <unistd.h>
 
 #include <cutils/log.h>
+#ifdef TARGET7x30
 #include <ui/OverlayHtc.h>
+#endif
 #include <camera/CameraParameters.h>
 #include <hardware/camera.h>
 #include <binder/IMemory.h>
-#include "7x30camera.h"
+#include "htccamera.h"
 #include <cutils/properties.h>
 
 using android::sp;
+#ifdef TARGET7x30
 using android::Overlay;
+#endif
 using android::String8;
 using android::IMemory;
 using android::IMemoryHeap;
@@ -95,7 +99,9 @@ typedef struct priv_camera_device {
     /* old world*/
     int preview_width;
     int preview_height;
+#ifdef TARGET7x30
     sp<Overlay> overlay;
+#endif
     gralloc_module_t const *gralloc;
 } priv_camera_device_t;
 
@@ -509,11 +515,13 @@ int camera_set_preview_window(struct camera_device * device,
     dev->preview_width = preview_width;
     dev->preview_height = preview_height;
 
+#ifdef TARGET7x30
     dev->overlay =  new Overlay(wrap_set_fd_hook,
                                 wrap_set_crop_hook,
                                 wrap_queue_buffer_hook,
                                 (void *)dev);
     gCameraHals[dev->cameraid]->setOverlay(dev->overlay);
+#endif
     LOGI("%s---,rv %d", __FUNCTION__,rv);
 
     return rv;

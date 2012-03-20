@@ -9,12 +9,7 @@ LOCAL_MODULE := camera.$(TARGET_BOARD_PLATFORM)
 
 LOCAL_MODULE_TAGS := optional
 
-ifeq ($(TARGET_BOARD_PLATFORM),msm7x30)
-    LOCAL_SRC_FILES := 7x30camera.cpp
-endif
-ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
-    LOCAL_SRC_FILES := qsd8kcamera.cpp
-endif
+LOCAL_SRC_FILES := htccamera.cpp
 
 LOCAL_C_INCLUDES := frameworks/base/services \
                     frameworks/base/include \
@@ -26,6 +21,15 @@ LOCAL_SHARED_LIBRARIES += libui libhardware libcamera_client
 LOCAL_SHARED_LIBRARIES += libcamera
 LOCAL_PRELINK_MODULE := false
 
+ifeq ($(TARGET_BOARD_PLATFORM),msm7x30)
+    LOCAL_CFLAGS += -DTARGET7x30
+endif
+ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
+    LOCAL_CFLAGS += -DTARGET8x50
+endif
+ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
+    LOCAL_CFLAGS += -DTARGET8x60
+endif
 ifeq ($(BOARD_HAVE_HTC_FFC), true)
     LOCAL_CFLAGS += -DHTC_FFC
 endif

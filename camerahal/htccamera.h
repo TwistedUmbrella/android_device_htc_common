@@ -20,7 +20,9 @@
 #include <binder/IMemory.h>
 #include <utils/RefBase.h>
 #include <surfaceflinger/ISurface.h>
+#ifdef TARGET7x30
 #include <ui/OverlayHtc.h>
+#endif
 #include <camera/Camera.h>
 #include <camera/CameraParameters.h>
 
@@ -35,7 +37,9 @@ struct str_map {
 
 namespace android {
 
+#ifdef TARGET7x30
 class Overlay;
+#endif
 
 /**
  *  The size of image for display.
@@ -148,11 +152,13 @@ public:
      */
     virtual void        encodeData() = 0;
 
+#ifdef TARGET7x30
     /**
      * Only used if overlays are used for camera preview.
      */
     virtual bool         useOverlay() {return false;}
     virtual status_t     setOverlay(const sp<Overlay> &overlay) {return BAD_VALUE;}
+#endif
 
     /**
      * Stop a previously started preview.
