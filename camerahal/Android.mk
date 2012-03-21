@@ -9,7 +9,12 @@ LOCAL_MODULE := camera.$(TARGET_BOARD_PLATFORM)
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_SRC_FILES := htccamera.cpp
+ifeq ($(TARGET_BOARD_PLATFORM),msm7x30)
+    LOCAL_SRC_FILES := htccamera.cpp
+endif
+ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
+    LOCAL_SRC_FILES := qsd8kcamera.cpp
+endif
 
 LOCAL_C_INCLUDES := frameworks/base/services \
                     frameworks/base/include \
