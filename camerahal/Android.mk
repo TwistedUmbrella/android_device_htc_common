@@ -32,9 +32,6 @@ endif
 ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
     LOCAL_CFLAGS += -DTARGET8x50
 endif
-ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
-    LOCAL_CFLAGS += -DTARGET8x60
-endif
 ifeq ($(BOARD_HAVE_HTC_FFC), true)
     LOCAL_CFLAGS += -DHTC_FFC
 endif

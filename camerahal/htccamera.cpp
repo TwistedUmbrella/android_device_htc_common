@@ -22,11 +22,7 @@
 
 #define LOG_TAG "CameraHAL"
 
-#ifdef TARGET8x60
-#define MAX_CAMERAS_SUPPORTED 3
-#else
 #define MAX_CAMERAS_SUPPORTED 2
-#endif
 #define GRALLOC_USAGE_PMEM_PRIVATE_ADSP GRALLOC_USAGE_PRIVATE_0
 
 #include <fcntl.h>
@@ -1150,9 +1146,6 @@ int camera_get_number_of_cameras(void)
 {
 #ifdef TARGET8x50
     return 1;
-#endif
-#ifdef TARGET8x60
-    return 3;
 #endif
 #ifdef TARGET7x30
     int num_cameras = HAL_getNumberOfCameras();
