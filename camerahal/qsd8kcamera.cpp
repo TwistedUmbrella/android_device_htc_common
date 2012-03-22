@@ -296,6 +296,27 @@ CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
 void
 CameraHAL_FixupParams(android::CameraParameters &settings)
 {
+    settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
+#ifdef CAF_PARAMS
+    settings.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
+    settings.set(CameraParameters::KEY_MAX_CONTRAST, "10");
+    settings.set(CameraParameters::KEY_MAX_SATURATION, "10");
+    static String8 touchafaec_values;
+    static const str_map touchafaec[] = {
+        { CameraParameters::TOUCH_AF_AEC_OFF, FALSE },
+        { CameraParameters::TOUCH_AF_AEC_ON, TRUE }
+    };
+    touchafaec_values = create_values_str(touchafaec, sizeof(touchafaec)/sizeof(str_map));
+    settings.set(CameraParameters::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
+    settings.set("touchAfAec-dx","100");
+    settings.set("touchAfAec-dy","100");
+    settings.set("num-snaps-per-shutter", "1");
+    settings.set("zoom-supported", "true");
+    settings.set("video-zoom-support", "true");
+    settings.set("video-stabilization-supported", "true");
+    settings.set("capture-burst-interval-supported", "false");
+#endif
+/*
     const char *preview_sizes =
          "1280x720,800x480,768x432,720x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
     const char *video_sizes =
@@ -341,6 +362,7 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
       settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
                    preview_fps_range);
    }
+*/
 }
 
 /* Hardware Camera interface handlers. */
