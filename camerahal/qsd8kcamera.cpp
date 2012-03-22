@@ -18,6 +18,7 @@
 #define LOG_TAG "CameraHAL"
 
 #include <qsd8kcamera.h>
+#include <camera/CameraParameters.h>
 #include <hardware/hardware.h>
 #include <hardware/camera.h>
 #include <binder/IMemory.h>
@@ -292,6 +293,21 @@ CameraHAL_GetCam_Info(int camera_id, struct camera_info *info)
    info->orientation = 90;
    return NO_ERROR;
 }
+
+#ifdef CAF_PARAMS
+static String8 create_values_str(const str_map *values, int len) {
+    String8 str;
+    
+    if (len > 0) {
+        str.append(values[0].desc);
+    }
+    for (int i = 1; i < len; i++) {
+        str.append(",");
+        str.append(values[i].desc);
+    }
+    return str;
+}
+#endif
 
 void
 CameraHAL_FixupParams(android::CameraParameters &settings)
