@@ -35,7 +35,7 @@
 #include <camera/CameraParameters.h>
 #include <hardware/camera.h>
 #include <binder/IMemory.h>
-#include "htccamera.h"
+#include "msm7camera.h"
 #include <cutils/properties.h>
 
 using android::sp;
@@ -46,11 +46,9 @@ using android::IMemoryHeap;
 using android::CameraParameters;
 
 using android::CameraInfo;
-#ifdef TARGET7x30
 using android::HAL_getCameraInfo;
 using android::HAL_getNumberOfCameras;
 using android::HAL_openCameraHardware;
-#endif
 using android::CameraHardwareInterface;
 
 static sp<CameraHardwareInterface> gCameraHals[MAX_CAMERAS_SUPPORTED];
@@ -1004,9 +1002,7 @@ int camera_device_open(const hw_module_t* module, const char* name,
 {
     int rv = 0;
     int cameraid;
-#ifdef TARGET7x30
     int num_cameras = 0;
-#endif
     priv_camera_device_t* priv_camera_device = NULL;
     camera_device_ops_t* camera_ops = NULL;
     sp<CameraHardwareInterface> camera = NULL;
@@ -1019,7 +1015,6 @@ int camera_device_open(const hw_module_t* module, const char* name,
     if (name != NULL) {
         cameraid = atoi(name);
 
-#ifdef TARGET7x30
         num_cameras = HAL_getNumberOfCameras();
 
         if(cameraid > num_cameras)
@@ -1030,7 +1025,6 @@ int camera_device_open(const hw_module_t* module, const char* name,
             rv = -EINVAL;
             goto fail;
         }
-#endif
 
         if(gCamerasOpen >= MAX_CAMERAS_SUPPORTED)
         {
@@ -1105,7 +1099,6 @@ int camera_device_open(const hw_module_t* module, const char* name,
 
         *device = &priv_camera_device->base.common;
 
-#ifdef TARGET7x30
         // -------- specific stuff --------
 
         priv_camera_device->cameraid = cameraid;
@@ -1121,7 +1114,6 @@ int camera_device_open(const hw_module_t* module, const char* name,
 
         gCameraHals[cameraid] = camera;
         gCamerasOpen++;
-#endif
     }
     LOGI("%s---ok rv %d", __FUNCTION__,rv);
 
@@ -1144,16 +1136,11 @@ fail:
 
 int camera_get_number_of_cameras(void)
 {
-#ifdef TARGET8x50
-    return 1;
-#endif
-#ifdef TARGET7x30
     int num_cameras = HAL_getNumberOfCameras();
 
     LOGI("%s: number:%i", __FUNCTION__, num_cameras);
 
     return num_cameras;
-#endif
 }
 
 int camera_get_camera_info(int camera_id, struct camera_info *info)
@@ -1161,9 +1148,8 @@ int camera_get_camera_info(int camera_id, struct camera_info *info)
     int rv = 0;
 
     CameraInfo cameraInfo;
-#ifdef TARGET7x30
+
     android::HAL_getCameraInfo(camera_id, &cameraInfo);
-#endif
 
     info->facing = cameraInfo.facing;
     info->orientation = cameraInfo.orientation;
