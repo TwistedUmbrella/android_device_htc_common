@@ -32,6 +32,9 @@ endif
 ifeq ($(BOARD_FFC_HAS_OFFSET), true)
     LOCAL_CFLAGS += -DOFFSET_FFC
 endif
+ifeq ($(BOARD_CAM_HAS_OFFSET), true)
+    LOCAL_CFLAGS += -DOFFSET_CAM
+endif
 ifeq ($(BOARD_USE_REVERSE_FFC), true)
     LOCAL_CFLAGS += -DREVERSE_FFC
 endif

@@ -883,6 +883,10 @@ char* camera_get_parameters(struct camera_device * device)
     }
 #endif
 
+#ifdef OFFSET_CAM
+    camParams.set(CameraParameters::KEY_ROTATION, 0);
+#endif
+
     params_str8 = camParams.flatten();
     params = (char*) malloc(sizeof(char) * (params_str8.length()+1));
     strcpy(params, params_str8.string());
