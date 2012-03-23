@@ -16,7 +16,7 @@ ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
     LOCAL_SRC_FILES := qsd8kcamera.cpp
 endif
 ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
-    LOCAL_SRC_FILES := qsd8kcamera.cpp
+    LOCAL_SRC_FILES := msm8camera.cpp
 endif
 
 LOCAL_C_INCLUDES := frameworks/base/services \
@@ -27,6 +27,9 @@ LOCAL_C_INCLUDES := frameworks/base/services \
 LOCAL_SHARED_LIBRARIES := liblog libutils libcutils libbinder
 LOCAL_SHARED_LIBRARIES += libui libhardware libcamera_client
 LOCAL_SHARED_LIBRARIES += libcamera
+ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
+  LOCAL_SHARED_LIBRARIES += libcameraLN libcameraSP
+endif
 LOCAL_PRELINK_MODULE := false
 
 ifeq ($(BOARD_HAVE_HTC_FFC), true)

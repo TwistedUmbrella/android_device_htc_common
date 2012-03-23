@@ -2,9 +2,8 @@
  * Copyright (C) 2012, Raviprasad V Mummidi.
  *
  * Modified by Andrew Sutherland <dr3wsuth3rland@gmail.com>
- *              for The Evervolv Project's qsd8k lineup
  *
- * Updated by kushdeck for preview and newer camera functionality
+ * Hacked for msm8660 by Twisted Playground
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -283,7 +282,7 @@ namespace android {
         
         settings.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                      CameraParameters::PIXEL_FORMAT_YUV420SP);
-
+        
         settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
         
         if (!settings.get(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
@@ -314,7 +313,6 @@ namespace android {
             settings.set(CameraParameters::KEY_PREVIEW_FRAME_RATE,
                          preferred_frame_rate);
         }
-
 #ifdef CAF_PARAMS
         settings.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
         settings.set(CameraParameters::KEY_MAX_CONTRAST, "10");
@@ -325,7 +323,6 @@ namespace android {
         settings.set("video-stabilization-supported", "true");
         settings.set("capture-burst-interval-supported", "false");
 #endif
-
     }
     
     static void camera_release_memory(struct camera_memory *mem) { }

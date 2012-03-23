@@ -175,11 +175,11 @@ static void wrap_queue_buffer_hook(void *data, void* buffer)
     window = dev->window;
 
 	//QiSS ME fix video preview crash
-    if(window ==0)
+    if(window == 0)
 		return;
 
     heap =  gCameraHals[dev->cameraid]->getPreviewHeap();
-    if(heap ==0)
+    if(heap == 0)
 		return;
 
     int offset = (int)buffer;
