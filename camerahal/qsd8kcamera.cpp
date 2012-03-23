@@ -346,35 +346,33 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
      settings.set("capture-burst-interval-supported", "false");
      */
 #endif
-    /* Original parameters for camera
-     const char *preview_sizes =
-     "1280x720,800x480,768x432,720x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
-     const char *video_sizes =
-     "1280x720,800x480,720x480,640x480,352x288,320x240,176x144";
-     const char *preview_frame_rates  = "30,27,24,15";
-     const char *preferred_frame_rate = "15";
-     const char *preview_fps_range     = "(3000,30000)";
-     if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
-     settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, preview_sizes);
-     }
-     settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
-     android::CameraParameters::PIXEL_FORMAT_YUV420SP);
-     if (!settings.get(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
-     settings.set(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, video_sizes);
-     }
-     if (!settings.get(android::CameraParameters::KEY_VIDEO_SIZE)) {
-     settings.set(android::CameraParameters::KEY_VIDEO_SIZE, preferred_size);
-     }
-     if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
-     settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
-     }
-     if (!settings.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
-     settings.set(android::CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_frame_rate);
-     }
-     if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
-     settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, preview_fps_range);
-     }
-     */
+    const char *preview_sizes =
+    "1280x720,800x480,768x432,720x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
+    const char *video_sizes =
+    "1280x720,800x480,720x480,640x480,352x288,320x240,176x144";
+    const char *preview_frame_rates  = "30,27,24,15";
+    const char *preferred_frame_rate = "15";
+    //const char *preview_fps_range     = "(3000,30000)";
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
+        settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES, preview_sizes);
+    }
+    settings.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
+                 android::CameraParameters::PIXEL_FORMAT_YUV420SP);
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
+        settings.set(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, video_sizes);
+    }
+    if (!settings.get(android::CameraParameters::KEY_VIDEO_SIZE)) {
+        settings.set(android::CameraParameters::KEY_VIDEO_SIZE, preferred_size);
+    }
+    if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
+        settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
+    }
+    if (!settings.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
+        settings.set(android::CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_frame_rate);
+    }
+    /*if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
+        settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, preview_fps_range);
+    }*/
 }
 
 /* Hardware Camera interface handlers. */
