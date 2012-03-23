@@ -35,12 +35,6 @@ LOCAL_PRELINK_MODULE := false
 ifeq ($(BOARD_HAVE_HTC_FFC), true)
     LOCAL_CFLAGS += -DHTC_FFC
 endif
-ifeq ($(BOARD_FFC_HAS_OFFSET), true)
-    LOCAL_CFLAGS += -DOFFSET_FFC
-endif
-ifeq ($(BOARD_CAM_HAS_OFFSET), true)
-    LOCAL_CFLAGS += -DOFFSET_CAM
-endif
 ifeq ($(BOARD_USE_REVERSE_FFC), true)
     LOCAL_CFLAGS += -DREVERSE_FFC
 endif

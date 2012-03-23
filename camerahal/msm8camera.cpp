@@ -385,11 +385,9 @@ namespace android {
     
     extern "C" int get_number_of_cameras(void)
     {
-        LOGE("get_number_of_cameras:");
-        return 1;
         
-        //    LOGE("Q%s: E", __func__);
-        //    return android::HAL_getNumberOfCameras( );
+        LOGE("Q%s: E", __func__);
+        return android::HAL_getNumberOfCameras( );
     }
     
     extern "C" int get_camera_info(int camera_id, struct camera_info *info)

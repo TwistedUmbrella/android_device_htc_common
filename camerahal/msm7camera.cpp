@@ -667,14 +667,14 @@ int camera_store_meta_data_in_buffers(struct camera_device * device, int enable)
 {
     int rv = -EINVAL;
     priv_camera_device_t* dev = NULL;
-
+    
     LOGI("%s+++: device %p", __FUNCTION__, device);
-
+    
     if(!device)
         return rv;
-
+    
     dev = (priv_camera_device_t*) device;
-
+    
     //  TODO: meta data buffer not current supported
     //rv = gCameraHals[dev->cameraid]->storeMetaDataInBuffers(enable);
     LOGI("%s--- rv %d", __FUNCTION__,rv);
@@ -880,18 +880,11 @@ char* camera_get_parameters(struct camera_device * device)
 
 #ifdef HTC_FFC
     if (dev->cameraid == 1) {
-#ifdef OFFSET_FFC
-        camParams.set(CameraParameters::KEY_ROTATION, 0);
-#endif
 #ifdef REVERSE_FFC
         /* Change default parameters for the front camera */
         camParams.set("front-camera-mode", "reverse"); // default is "mirror"
 #endif
     }
-#endif
-
-#ifdef OFFSET_CAM
-    camParams.set(CameraParameters::KEY_ROTATION, 0);
 #endif
 
     params_str8 = camParams.flatten();
@@ -1163,7 +1156,8 @@ int camera_get_camera_info(int camera_id, struct camera_info *info)
     android::HAL_getCameraInfo(camera_id, &cameraInfo);
 
     info->facing = cameraInfo.facing;
-    info->orientation = cameraInfo.orientation;
+    //info->orientation = cameraInfo.orientation;
+    info->orientation = 90;
 
     LOGI("%s: id:%i faceing:%i orientation: %i", __FUNCTION__,camera_id, info->facing, info->orientation);
 
