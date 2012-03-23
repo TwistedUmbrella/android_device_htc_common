@@ -32,6 +32,9 @@
 #include <gralloc_priv.h>
 #include <cutils/properties.h>
 
+using android::String8;
+using android::CameraParameters;
+
 #define NO_ERROR 0
 //#define LOGV LOGI
 #define GRALLOC_USAGE_PMEM_PRIVATE_ADSP GRALLOC_USAGE_PRIVATE_0
@@ -319,16 +322,16 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
 {
     settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
 #ifdef CAF_PARAMS
-    settings.set(camSettings::KEY_MAX_SHARPNESS, "30");
-    settings.set(camSettings::KEY_MAX_CONTRAST, "10");
-    settings.set(camSettings::KEY_MAX_SATURATION, "10");
+    settings.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
+    settings.set(CameraParameters::KEY_MAX_CONTRAST, "10");
+    settings.set(CameraParameters::KEY_MAX_SATURATION, "10");
     static String8 touchafaec_values;
     static const str_map touchafaec[] = {
-        { camSettings::TOUCH_AF_AEC_OFF, FALSE },
-        { camSettings::TOUCH_AF_AEC_ON, TRUE }
+        { CameraParameters::TOUCH_AF_AEC_OFF, FALSE },
+        { CameraParameters::TOUCH_AF_AEC_ON, TRUE }
     };
     touchafaec_values = create_values_str(touchafaec, sizeof(touchafaec)/sizeof(str_map));
-    settings.set(camSettings::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
+    settings.set(CameraParameters::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
     settings.set("touchAfAec-dx","100");
     settings.set("touchAfAec-dy","100");
     settings.set("num-snaps-per-shutter", "1");
