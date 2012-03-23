@@ -188,9 +188,13 @@ CameraHAL_HandlePreviewData(const android::sp<android::IMemory>& dataPtr,
            "offset:%#x size:%#x base:%p\n", previewWidth, previewHeight, 
            (unsigned)offset, size, mHeap != NULL ? mHeap->base() : 0);
 
-      mWindow->set_usage(mWindow,
-                         GRALLOC_USAGE_PMEM_PRIVATE_ADSP |
-                         GRALLOC_USAGE_SW_READ_OFTEN);
+#ifndef CAF_PARAMS
+       mWindow->set_usage(mWindow, GRALLOC_USAGE_PMEM_PRIVATE_ADSP | GRALLOC_USAGE_SW_READ_OFTEN);
+#else
+#ifdef CPU_COLOR_CONVERT
+       mWindow->set_usage(mWindow, GRALLOC_USAGE_PMEM_PRIVATE_ADSP | GRALLOC_USAGE_SW_READ_OFTEN);
+#endif
+#endif
       retVal = mWindow->set_buffers_geometry(mWindow,
                                              previewWidth, previewHeight, 
                                              HAL_PIXEL_FORMAT_RGBX_8888);
