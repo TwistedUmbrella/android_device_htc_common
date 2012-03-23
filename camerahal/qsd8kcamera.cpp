@@ -330,6 +330,10 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
     settings.set(CameraParameters::KEY_MAX_CONTRAST, "10");
     settings.set(CameraParameters::KEY_MAX_SATURATION, "10");
     settings.set("num-snaps-per-shutter", "1");
+    settings.set("zoom-supported", "true");
+    settings.set("video-zoom-support", "true");
+    settings.set("video-stabilization-supported", "true");
+    settings.set("capture-burst-interval-supported", "false");
     /* Extended parameters for camera
      static String8 touchafaec_values;
      static const str_map touchafaec[] = {
@@ -340,10 +344,6 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
      settings.set(CameraParameters::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
      settings.set("touchAfAec-dx","100");
      settings.set("touchAfAec-dy","100");
-     settings.set("zoom-supported", "true");
-     settings.set("video-zoom-support", "true");
-     settings.set("video-stabilization-supported", "true");
-     settings.set("capture-burst-interval-supported", "false");
      */
 #endif
     const char *preview_sizes =
