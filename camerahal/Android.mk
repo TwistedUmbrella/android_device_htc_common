@@ -15,6 +15,9 @@ endif
 ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
     LOCAL_SRC_FILES := qsd8kcamera.cpp
 endif
+ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
+    LOCAL_SRC_FILES := qsd8kcamera.cpp
+endif
 
 LOCAL_C_INCLUDES := frameworks/base/services \
                     frameworks/base/include \
