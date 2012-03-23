@@ -362,7 +362,7 @@ CameraHAL_FixupParams(android::CameraParameters &settings)
         settings.set(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, video_sizes);
     }
     if (!settings.get(android::CameraParameters::KEY_VIDEO_SIZE)) {
-        settings.set(android::CameraParameters::KEY_VIDEO_SIZE, preferred_size);
+        settings.set(android::CameraParameters::KEY_VIDEO_SIZE, "640x480");
     }
     if (!settings.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
         settings.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
