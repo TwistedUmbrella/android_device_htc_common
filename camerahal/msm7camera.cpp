@@ -413,6 +413,7 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     camParams.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
     camParams.set(CameraParameters::KEY_MAX_CONTRAST, "10");
     camParams.set(CameraParameters::KEY_MAX_SATURATION, "10");
+/* Extended parameters for camera
     static String8 touchafaec_values;
     static const str_map touchafaec[] = {
         { CameraParameters::TOUCH_AF_AEC_OFF, FALSE },
@@ -427,6 +428,7 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     camParams.set("video-zoom-support", "true");
     camParams.set("video-stabilization-supported", "true");
     camParams.set("capture-burst-interval-supported", "false");
+*/
 #endif
 }
 
