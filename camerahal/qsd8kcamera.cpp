@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2012, Raviprasad V Mummidi.
+ * Copyright (C) 2012, Evervolv Project
  *
  * Modified by Andrew Sutherland <dr3wsuth3rland@gmail.com>
- *              for The Evervolv Project's qsd8k lineup
- *
- * Updated by kushdeck for preview and newer camera functionality
+ * Updated / Modified by kushdeck
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

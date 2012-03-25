@@ -2,8 +2,8 @@
  * Copyright (C) 2012, Raviprasad V Mummidi.
  *
  * Modified by Andrew Sutherland <dr3wsuth3rland@gmail.com>
- *
- * Hacked for msm8660 by Twisted Playground
+ * Updated / Modified by kushdeck
+ * Revised (msm8660) by Twisted Playground
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
