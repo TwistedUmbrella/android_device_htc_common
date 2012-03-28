@@ -435,10 +435,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
      camParams.set("capture-burst-interval-supported", "false");
 */
 #endif
-    const char *preview_sizes =
-    "1280x720,800x480,768x432,720x480,640x480,576x432,480x320,384x288,352x288,320x240,240x160,176x144";
-    const char *video_sizes = 
-    "1280x720,800x480,720x480,640x480,480x320,352x288,320x240,176x144";
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
     const char *preferred_rate = "15";
@@ -448,16 +444,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
 
     camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
                   preferred_size);
-    
-    if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
-        camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
-                      preview_sizes);
-    }
-    
-    if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES)) {
-        camParams.set(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES,
-                      video_sizes);
-    }
     
     if (!camParams.get(android::CameraParameters::KEY_VIDEO_SIZE)) {
             camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
