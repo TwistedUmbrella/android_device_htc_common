@@ -408,7 +408,6 @@ static String8 create_values_str(const str_map *values, int len) {
 
 void CameraHAL_FixupParams(android::CameraParameters &camParams)
 {
-    camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
 #ifdef CAF_PARAMS
     camParams.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
     camParams.set(CameraParameters::KEY_MAX_CONTRAST, "10");
@@ -444,10 +443,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
 
     camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
                   preferred_size);
-    
-    if (!camParams.get(android::CameraParameters::KEY_VIDEO_SIZE)) {
-            camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
-    }
 
     if (!camParams.get(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO)) {
         camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
