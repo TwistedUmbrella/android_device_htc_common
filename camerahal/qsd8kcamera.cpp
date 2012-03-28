@@ -283,7 +283,7 @@ namespace android {
         settings.set(CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                      CameraParameters::PIXEL_FORMAT_YUV420SP);
 
-        settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, "640x480");
+        settings.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, preferred_size);
         
         if (!settings.get(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES)) {
             settings.set(CameraParameters::KEY_SUPPORTED_PREVIEW_SIZES,
