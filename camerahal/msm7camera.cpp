@@ -442,7 +442,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
     const char *preferred_rate = "15";
-    const char *frame_rate_range     = "(15,30)";
     
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
@@ -476,12 +475,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     
     if (!camParams.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
             camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_rate);
-    }
-
-    if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
-        LOGD("Setting KEY_PREVIEW_FPS_RANGE: %s\n", frame_rate_range);
-        camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
-                      frame_rate_range);
     }
 }
 
