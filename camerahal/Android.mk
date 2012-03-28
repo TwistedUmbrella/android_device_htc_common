@@ -41,9 +41,6 @@ endif
 ifeq ($(TARGET_USE_CAF_PARAMS), true)
     LOCAL_CFLAGS += -DCAF_PARAMS
 endif
-ifeq ($(CAMERA_CONVERT_COLORS),true)
-    LOCAL_CFLAGS += -DCPU_COLOR_CONVERT
-endif
 
 include $(BUILD_SHARED_LIBRARY)
 
