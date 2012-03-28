@@ -436,7 +436,7 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
 #endif
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
-    const char *preferred_rate = "15";
+    const char *preferred_rate = "30";
     
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
@@ -900,7 +900,14 @@ char* camera_get_parameters(struct camera_device * device)
         /* Change default parameters for the front camera */
         camParams.set("front-camera-mode", "reverse"); // default is "mirror"
 #endif
+#ifdef INVERSE_ORIENTATION
+    } else {
+        camParams.set("front-camera-mode", "mirror");
+#endif
     }
+#endif
+#ifdef INVERSE_ORIENTATION
+    camParams.set("orientation", "landscape");
 #endif
 
     params_str8 = camParams.flatten();
@@ -1173,7 +1180,11 @@ int camera_get_camera_info(int camera_id, struct camera_info *info)
 
     info->facing = cameraInfo.facing;
     //info->orientation = cameraInfo.orientation;
+#ifdef INVERSE_ORIENTATION
+    info->orientation = 270;
+#else
     info->orientation = 90;
+#endif
 
     LOGI("%s: id:%i faceing:%i orientation: %i", __FUNCTION__,camera_id, info->facing, info->orientation);
 

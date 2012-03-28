@@ -41,6 +41,9 @@ endif
 ifeq ($(TARGET_USE_CAF_PARAMS), true)
     LOCAL_CFLAGS += -DCAF_PARAMS
 endif
+ifeq ($(TARGET_INVERSE_ROTATE), true)
+    LOCAL_CFLAGS += -DINVERSE_ORIENTATION
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 
