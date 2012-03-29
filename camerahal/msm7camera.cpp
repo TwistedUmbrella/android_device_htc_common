@@ -1,7 +1,8 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
- * Copyright (C) 2012 Zhibin Wu, Twisted, Nico Kaiser
+ * Copyright (C) 2012 Zhibin Wu, Simon Davie, Nico Kaiser
  * Copyright (C) 2012 QiSS ME Project Team
+ * Copyright (C) 2012 Twisted, Sean Neeley
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
-* @file camera.cpp
-*/
 
 #define LOG_TAG "CameraHAL"
 
@@ -1181,9 +1178,13 @@ int camera_get_camera_info(int camera_id, struct camera_info *info)
     info->facing = cameraInfo.facing;
     //info->orientation = cameraInfo.orientation;
 #ifdef INVERSE_ORIENTATION
-    info->orientation = 270;
-#else
-    info->orientation = 90;
+    if(info->facing == 1) {
+        info->orientation = 270;
+    } else {
+#endif
+        info->orientation = 90;
+#ifdef INVERSE_ORIENTATION
+    }
 #endif
 
     LOGI("%s: id:%i faceing:%i orientation: %i", __FUNCTION__,camera_id, info->facing, info->orientation);
