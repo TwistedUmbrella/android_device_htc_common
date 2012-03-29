@@ -414,6 +414,21 @@ namespace android {
         qCamera = openCameraHardware(cameraId);
         camera_device_t* camera_device = NULL;
         camera_device_ops_t* camera_ops = NULL;
+
+#ifdef HTC_FFC
+#define HTC_SWITCH_CAMERA_FILE_PATH "/sys/android_camera2/htcwc"
+        
+        char htc_buffer[16];
+        int htc_fd;
+        
+        if (access(HTC_SWITCH_CAMERA_FILE_PATH, W_OK) == 0) {
+            LOGI("Switching to HTC Camera: %d", cameraid);
+            snprintf(htc_buffer, sizeof(htc_buffer), "%d", cameraid);
+            htc_fd = open(HTC_SWITCH_CAMERA_FILE_PATH, O_WRONLY);
+            write(htc_fd, htc_buffer, strlen(htc_buffer));
+            close(htc_fd);
+        }
+#endif
         
         camera_device = (camera_device_t*)malloc(sizeof(*camera_device));
         camera_ops = (camera_device_ops_t*)malloc(sizeof(*camera_ops));
