@@ -24,10 +24,6 @@ $(call inherit-product-if-exists, vendor/twisted/google-vendor.mk)
 # Inherit Language Files
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
-# Sets an HTC-specific device-agnostic overlay
-PRODUCT_PACKAGE_OVERLAYS := device/htc/common/overlay
-PRODUCT_PACKAGE_OVERLAYS += vendor/cm/overlay/dictionaries
-
 # Sets copy files for all HTC-specific device
 PRODUCT_COPY_FILES += device/htc/common/ecclist_for_mcc.conf:system/etc/ecclist_for_mcc.conf
 
