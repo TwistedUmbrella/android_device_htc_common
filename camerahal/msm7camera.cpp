@@ -133,13 +133,13 @@ static void dump_msg(const char *tag, int msg_type)
 static void wrap_set_fd_hook(void *data, int fd)
 {
     priv_camera_device_t* dev = NULL;
-    LOGI("%s+++: data %p", __FUNCTION__, data);
+    //LOGI("%s+++: data %p", __FUNCTION__, data);
 
     if(!data)
         return;
 
     dev = (priv_camera_device_t*) data;
-    LOGI("%s---: fd %i", __FUNCTION__, fd);
+    //LOGI("%s---: fd %i", __FUNCTION__, fd);
 }
 
 static void wrap_set_crop_hook(void *data,
@@ -161,7 +161,7 @@ static void wrap_queue_buffer_hook(void *data, void* buffer)
     sp<IMemoryHeap> heap;
     priv_camera_device_t* dev = NULL;
     preview_stream_ops* window = NULL;
-    LOGI("%s+++: %p", __FUNCTION__,data);
+    //LOGI("%s+++: %p", __FUNCTION__,data);
 
     if(!data)
         return;
@@ -424,11 +424,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
      camParams.set(CameraParameters::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
      camParams.set("touchAfAec-dx","100");
      camParams.set("touchAfAec-dy","100");
-     camParams.set("num-snaps-per-shutter", "1");
-     camParams.set("zoom-supported", "true");
-     camParams.set("video-zoom-support", "true");
-     camParams.set("video-stabilization-supported", "true");
-     camParams.set("capture-burst-interval-supported", "false");
 */
 #endif
     const char *preferred_size = "640x480";
@@ -437,9 +432,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
-
-    camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
-                  preferred_size);
 
     if (!camParams.get(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO)) {
         camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
