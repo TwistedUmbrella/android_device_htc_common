@@ -45,6 +45,8 @@ extern "C" {
  * and openCameraHardware() is 0 to N-1.
  */
 
+using android::HAL_getNumberOfCameras;
+
 struct qcom_mdp_rect {
     uint32_t x;
     uint32_t y;
@@ -387,11 +389,11 @@ namespace android {
     
     extern "C" int get_number_of_cameras(void)
     {
-        LOGE("get_number_of_cameras:");
-        return 1;
+        //LOGE("get_number_of_cameras:");
+        //return 1;
         
-        //    LOGE("Q%s: E", __func__);
-        //    return android::HAL_getNumberOfCameras( );
+        LOGE("Q%s: E", __func__);
+        return android::HAL_getNumberOfCameras( );
     }
     
     extern "C" int get_camera_info(int camera_id, struct camera_info *info)
@@ -422,8 +424,8 @@ namespace android {
         int htc_fd;
         
         if (access(HTC_SWITCH_CAMERA_FILE_PATH, W_OK) == 0) {
-            LOGI("Switching to HTC Camera: %d", cameraid);
-            snprintf(htc_buffer, sizeof(htc_buffer), "%d", cameraid);
+            LOGI("Switching to HTC Camera: %d", cameraId);
+            snprintf(htc_buffer, sizeof(htc_buffer), "%d", cameraId);
             htc_fd = open(HTC_SWITCH_CAMERA_FILE_PATH, O_WRONLY);
             write(htc_fd, htc_buffer, strlen(htc_buffer));
             close(htc_fd);
