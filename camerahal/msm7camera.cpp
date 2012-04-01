@@ -887,15 +887,11 @@ char* camera_get_parameters(struct camera_device * device)
         /* Change default parameters for the front camera */
         camParams.set("front-camera-mode", "reverse"); // default is "mirror"
 #endif
-#ifdef INVERSE_ORIENTATION
     } else {
         camParams.set("front-camera-mode", "mirror");
-#endif
     }
 #endif
-#ifdef INVERSE_ORIENTATION
     camParams.set("orientation", "landscape");
-#endif
 
     params_str8 = camParams.flatten();
     params = (char*) malloc(sizeof(char) * (params_str8.length()+1));
@@ -1167,15 +1163,11 @@ int camera_get_camera_info(int camera_id, struct camera_info *info)
 
     info->facing = cameraInfo.facing;
     //info->orientation = cameraInfo.orientation;
-#ifdef INVERSE_ORIENTATION
     if(info->facing == 1) {
         info->orientation = 270;
     } else {
-#endif
         info->orientation = 90;
-#ifdef INVERSE_ORIENTATION
     }
-#endif
 
     LOGI("%s: id:%i faceing:%i orientation: %i", __FUNCTION__,camera_id, info->facing, info->orientation);
 

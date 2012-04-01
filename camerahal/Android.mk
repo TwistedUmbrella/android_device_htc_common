@@ -15,9 +15,6 @@ endif
 ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
     LOCAL_SRC_FILES := qsd8kcamera.cpp
 endif
-ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
-    LOCAL_SRC_FILES := msm8camera.cpp
-endif
 
 LOCAL_C_INCLUDES := frameworks/base/services \
                     frameworks/base/include \
@@ -40,9 +37,6 @@ ifeq ($(BOARD_USE_REVERSE_FFC), true)
 endif
 ifeq ($(TARGET_USE_CAF_PARAMS), true)
     LOCAL_CFLAGS += -DCAF_PARAMS
-endif
-ifeq ($(TARGET_INVERSE_ROTATE), true)
-    LOCAL_CFLAGS += -DINVERSE_ORIENTATION
 endif
 
 include $(BUILD_SHARED_LIBRARY)
