@@ -53,29 +53,29 @@ static unsigned int gCamerasOpen = 0;
 //static android::Mutex gCameraDeviceLock;
 
 static int camera_device_open(const hw_module_t* module, const char* name,
-                hw_device_t** device);
+                              hw_device_t** device);
 static int camera_device_close(hw_device_t* device);
 static int camera_get_number_of_cameras(void);
 static int camera_get_camera_info(int camera_id, struct camera_info *info);
 
 static struct hw_module_methods_t camera_module_methods = {
-        open: camera_device_open
+open: camera_device_open
 };
 
 camera_module_t HAL_MODULE_INFO_SYM = {
-    common: {
-         tag: HARDWARE_MODULE_TAG,
-         version_major: 1,
-         version_minor: 0,
-         id: CAMERA_HARDWARE_MODULE_ID,
-         name: "7x30 CameraHal Module",
-         author: "Zhibin Wu",
-         methods: &camera_module_methods,
-         dso: NULL, /* remove compilation warnings */
-         reserved: {0}, /* remove compilation warnings */
-    },
-    get_number_of_cameras: camera_get_number_of_cameras,
-    get_camera_info: camera_get_camera_info,
+common: {
+tag: HARDWARE_MODULE_TAG,
+version_major: 1,
+version_minor: 0,
+id: CAMERA_HARDWARE_MODULE_ID,
+name: "7x30 CameraHal Module",
+author: "Zhibin Wu",
+methods: &camera_module_methods,
+dso: NULL, /* remove compilation warnings */
+reserved: {0}, /* remove compilation warnings */
+},
+get_number_of_cameras: camera_get_number_of_cameras,
+get_camera_info: camera_get_camera_info,
 };
 
 typedef struct priv_camera_device {
@@ -166,7 +166,6 @@ static void wrap_queue_buffer_hook(void *data, void* buffer)
     if(!data)
         return;
 
-
     dev = (priv_camera_device_t*) data;
 
     window = dev->window;
@@ -193,24 +192,24 @@ static void wrap_queue_buffer_hook(void *data, void* buffer)
     int height = dev->preview_height;
     if (0 != window->dequeue_buffer(window, &buf_handle, &stride)) {
         LOGE("%s: could not dequeue gralloc buffer", __FUNCTION__);
-	goto skipframe;
+        goto skipframe;
     }
     if (0 == dev->gralloc->lock(dev->gralloc, *buf_handle,
-			    GRALLOC_USAGE_SW_WRITE_MASK,
-			    0, 0, width, height, &vaddr)) {
+                                GRALLOC_USAGE_SW_WRITE_MASK,
+                                0, 0, width, height, &vaddr)) {
         // the code below assumes YUV, not RGB
-	memcpy(vaddr, frame, width * height * 3 / 2);
+        memcpy(vaddr, frame, width * height * 3 / 2);
         //LOGI("%s: copy frame to gralloc buffer", __FUNCTION__);
     } else {
         LOGE("%s: could not lock gralloc buffer", __FUNCTION__);
-	goto skipframe;
+        goto skipframe;
     }
 
     dev->gralloc->unlock(dev->gralloc, *buf_handle);
 
     if (0 != window->enqueue_buffer(window, buf_handle)) {
         LOGE("%s: could not dequeue gralloc buffer", __FUNCTION__);
-	goto skipframe;
+        goto skipframe;
     }
 
 skipframe:
@@ -230,7 +229,7 @@ skipframe:
         {
             LOGV("dumping data");
             written = write(file_fd, (char *)frame,
-                    dev->preview_frame_size);
+                            dev->preview_frame_size);
             if(written < 0)
                 LOGE("error in data write");
         }
@@ -248,7 +247,7 @@ skipframe:
  *******************************************************************/
 
 static camera_memory_t *wrap_memory_data(priv_camera_device_t *dev,
-                                    const sp<IMemory>& dataPtr)
+                                         const sp<IMemory>& dataPtr)
 {
     void *data;
     size_t size;
@@ -266,33 +265,31 @@ static camera_memory_t *wrap_memory_data(priv_camera_device_t *dev,
 
     LOGI("%s: data: %p size: %i", __FUNCTION__, data, size);
 
-
     LOGI(" offset:0x%x ",  offset);
 
-//#define DUMP_CAPTURE_JPEG
+    //#define DUMP_CAPTURE_JPEG
 #ifdef DUMP_CAPTURE_JPEG
     static int frameCnt = 0;
     int written;
-        char path[128];
-        snprintf(path, sizeof(path), "/data/%d_capture.jpg", frameCnt);
-        int file_fd = open(path, O_RDWR | O_CREAT, 0666);
-        LOGI("dumping capture jpeg %d", frameCnt);
-        if (file_fd < 0) {
-            LOGE("cannot open file:%s (error:%i)\n", path, file_fd);
-        }
-        else
-        {
-            LOGV("dumping jpeg");
-            written = write(file_fd, (char *)data,
-                    size);
-            if(written < 0)
-                LOGE("error in data write");
-        }
-        close(file_fd);
+    char path[128];
+    snprintf(path, sizeof(path), "/data/%d_capture.jpg", frameCnt);
+    int file_fd = open(path, O_RDWR | O_CREAT, 0666);
+    LOGI("dumping capture jpeg %d", frameCnt);
+    if (file_fd < 0) {
+        LOGE("cannot open file:%s (error:%i)\n", path, file_fd);
+    }
+    else
+    {
+        LOGV("dumping jpeg");
+        written = write(file_fd, (char *)data,
+                        size);
+        if(written < 0)
+            LOGE("error in data write");
+    }
+    close(file_fd);
     frameCnt++;
 #endif
 
-    
     mem = dev->request_memory(-1, size, 1, dev->user);
 
     LOGI(" mem:%p,mem->data%p ",  mem,mem->data);
@@ -304,7 +301,7 @@ static camera_memory_t *wrap_memory_data(priv_camera_device_t *dev,
 }
 
 static void wrap_notify_callback(int32_t msg_type, int32_t ext1,
-                                int32_t ext2, void* user)
+                                 int32_t ext2, void* user)
 {
     priv_camera_device_t* dev = NULL;
 
@@ -318,12 +315,12 @@ static void wrap_notify_callback(int32_t msg_type, int32_t ext1,
 
     if (dev->notify_callback)
         dev->notify_callback(msg_type, ext1, ext2, dev->user);
-	    LOGI("%s---", __FUNCTION__);
+    LOGI("%s---", __FUNCTION__);
 
 }
 //QiSS ME for capture
 static void wrap_data_callback(int32_t msg_type, const sp<IMemory>& dataPtr,
-                              void* user)
+                               void* user)
 {
     camera_memory_t *data = NULL;
     priv_camera_device_t* dev = NULL;
@@ -334,14 +331,13 @@ static void wrap_data_callback(int32_t msg_type, const sp<IMemory>& dataPtr,
     if(!user)
         return;
 
-
     dev = (priv_camera_device_t*) user;
 
     if(msg_type ==CAMERA_MSG_RAW_IMAGE)
-    	{
+    {
     	gCameraHals[dev->cameraid]->disableMsgType(CAMERA_MSG_RAW_IMAGE);
         return;
-    	}
+    }
 
     data = wrap_memory_data(dev, dataPtr);
 
@@ -353,7 +349,7 @@ static void wrap_data_callback(int32_t msg_type, const sp<IMemory>& dataPtr,
 //QiSS ME for record
 
 static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
-                                        const sp<IMemory>& dataPtr, void* user)
+                                         const sp<IMemory>& dataPtr, void* user)
 {
     priv_camera_device_t* dev = NULL;
     camera_memory_t *data = NULL;
@@ -367,9 +363,6 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
     dev = (priv_camera_device_t*) user;
 
     data = wrap_memory_data(dev, dataPtr);
-
-
-
 
     if (dev->data_timestamp_callback)
         dev->data_timestamp_callback(timestamp,msg_type, data, 0, dev->user);
@@ -387,7 +380,7 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
 #ifdef CAF_PARAMS
 static String8 create_values_str(const str_map *values, int len) {
     String8 str;
-    
+
     if (len > 0) {
         str.append(values[0].desc);
     }
@@ -414,40 +407,40 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     camParams.set("video-zoom-support", "true");
     camParams.set("video-stabilization-supported", "true");
     camParams.set("capture-burst-interval-supported", "false");
-/* Extended parameters for camera
+    /* Extended parameters for camera
      static String8 touchafaec_values;
      static const str_map touchafaec[] = {
-        { CameraParameters::TOUCH_AF_AEC_OFF, FALSE },
-        { CameraParameters::TOUCH_AF_AEC_ON, TRUE }
+     { CameraParameters::TOUCH_AF_AEC_OFF, FALSE },
+     { CameraParameters::TOUCH_AF_AEC_ON, TRUE }
      };
      touchafaec_values = create_values_str(touchafaec, sizeof(touchafaec)/sizeof(str_map));
      camParams.set(CameraParameters::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
      camParams.set("touchAfAec-dx","100");
      camParams.set("touchAfAec-dy","100");
-*/
+     */
 #endif
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
     const char *preferred_rate = "30";
-    
+
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
 
     camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
-                     preferred_size);
+                  preferred_size);
 
     if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
         camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,
                       preview_frame_rates);
     }
-    
+
     if (!camParams.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
-            camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_rate);
+        camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_rate);
     }
 }
 
 int camera_set_preview_window(struct camera_device * device,
-        struct preview_stream_ops *window)
+                              struct preview_stream_ops *window)
 {
     int rv = -EINVAL;
     int min_bufs = -1;
@@ -470,7 +463,7 @@ int camera_set_preview_window(struct camera_device * device,
 
     if (!dev->gralloc) {
         if (hw_get_module(GRALLOC_HARDWARE_MODULE_ID,
-                (const hw_module_t **)&(dev->gralloc))) {
+                          (const hw_module_t **)&(dev->gralloc))) {
             LOGE("%s: Fail on loading gralloc HAL", __FUNCTION__);
         }
     }
@@ -508,7 +501,7 @@ int camera_set_preview_window(struct camera_device * device,
     }
 
     window->set_usage(window, GRALLOC_USAGE_PMEM_PRIVATE_ADSP | GRALLOC_USAGE_SW_READ_OFTEN);
-    
+
     if (window->set_buffers_geometry(window, preview_width,
                                      preview_height, hal_pixel_format)) {
         LOGE("%s---: could not set buffers geometry to %s",
@@ -530,11 +523,11 @@ int camera_set_preview_window(struct camera_device * device,
 }
 
 void camera_set_callbacks(struct camera_device * device,
-        camera_notify_callback notify_cb,
-        camera_data_callback data_cb,
-        camera_data_timestamp_callback data_cb_timestamp,
-        camera_request_memory get_memory,
-        void *user)
+                          camera_notify_callback notify_cb,
+                          camera_data_callback data_cb,
+                          camera_data_timestamp_callback data_cb_timestamp,
+                          camera_request_memory get_memory,
+                          void *user)
 {
     priv_camera_device_t* dev = NULL;
 
@@ -554,7 +547,7 @@ void camera_set_callbacks(struct camera_device * device,
     gCameraHals[dev->cameraid]->setCallbacks(wrap_notify_callback, wrap_data_callback,
                                              wrap_data_callback_timestamp, (void *)dev);
 
-	    LOGI("%s---", __FUNCTION__);
+    LOGI("%s---", __FUNCTION__);
 
 }
 
@@ -593,7 +586,7 @@ void camera_disable_msg_type(struct camera_device * device, int32_t msg_type)
     dev = (priv_camera_device_t*) device;
 
     gCameraHals[dev->cameraid]->disableMsgType(msg_type);
-	    LOGI("%s---", __FUNCTION__);
+    LOGI("%s---", __FUNCTION__);
 
 }
 
@@ -670,14 +663,14 @@ int camera_store_meta_data_in_buffers(struct camera_device * device, int enable)
 {
     int rv = -EINVAL;
     priv_camera_device_t* dev = NULL;
-    
+
     LOGI("%s+++: device %p", __FUNCTION__, device);
-    
+
     if(!device)
         return rv;
-    
+
     dev = (priv_camera_device_t*) device;
-    
+
     //  TODO: meta data buffer not current supported
     //rv = gCameraHals[dev->cameraid]->storeMetaDataInBuffers(enable);
     LOGI("%s--- rv %d", __FUNCTION__,rv);
@@ -716,7 +709,7 @@ void camera_stop_recording(struct camera_device * device)
 
     gCameraHals[dev->cameraid]->stopRecording();
 
-//QiSS ME force start preview when recording stop
+    //QiSS ME force start preview when recording stop
     gCameraHals[dev->cameraid]->startPreview();
     LOGI("%s---", __FUNCTION__);
 }
@@ -739,7 +732,7 @@ int camera_recording_enabled(struct camera_device * device)
 }
 
 void camera_release_recording_frame(struct camera_device * device,
-                const void *opaque)
+                                    const void *opaque)
 {
     priv_camera_device_t* dev = NULL;
     //camera_memory_t *data = (camera_memory_t *)(&opaque);
@@ -751,11 +744,11 @@ void camera_release_recording_frame(struct camera_device * device,
         return;
 
     dev = (priv_camera_device_t*) device;
-/*
-    if ( NULL != data ) {
-        data->release(data);
-    }
-*/
+    /*
+     if ( NULL != data ) {
+     data->release(data);
+     }
+     */
     //gCameraHals[dev->cameraid]->releaseRecordingFrame(opaque);
 
     LOGI("%s---", __FUNCTION__);
@@ -912,7 +905,7 @@ static void camera_put_parameters(struct camera_device *device, char *parms)
 }
 
 int camera_send_command(struct camera_device * device,
-            int32_t cmd, int32_t arg1, int32_t arg2)
+                        int32_t cmd, int32_t arg1, int32_t arg2)
 {
     int rv = -EINVAL;
     priv_camera_device_t* dev = NULL;
@@ -956,8 +949,7 @@ int camera_dump(struct camera_device * device, int fd)
     dev = (priv_camera_device_t*) device;
 
 
-
-   // rv = gCameraHals[dev->cameraid]->dump(fd);
+    // rv = gCameraHals[dev->cameraid]->dump(fd);
     return rv;
 }
 
@@ -1008,7 +1000,7 @@ done:
  */
 
 int camera_device_open(const hw_module_t* module, const char* name,
-                hw_device_t** device)
+                       hw_device_t** device)
 {
     int rv = 0;
     int cameraid;
@@ -1030,8 +1022,8 @@ int camera_device_open(const hw_module_t* module, const char* name,
         if(cameraid > num_cameras)
         {
             LOGE("camera service provided cameraid out of bounds, "
-                    "cameraid = %d, num supported = %d",
-                    cameraid, num_cameras);
+                 "cameraid = %d, num supported = %d",
+                 cameraid, num_cameras);
             rv = -EINVAL;
             goto fail;
         }
@@ -1061,10 +1053,10 @@ int camera_device_open(const hw_module_t* module, const char* name,
 
 #ifdef HTC_FFC
 #define HTC_SWITCH_CAMERA_FILE_PATH "/sys/android_camera2/htcwc"
-        
+
         char htc_buffer[16];
         int htc_fd;
-        
+
         if (access(HTC_SWITCH_CAMERA_FILE_PATH, W_OK) == 0) {
             LOGI("Switching to HTC Camera: %d", cameraid);
             snprintf(htc_buffer, sizeof(htc_buffer), "%d", cameraid);
