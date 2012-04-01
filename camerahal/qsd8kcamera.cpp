@@ -45,8 +45,6 @@ extern "C" {
  * and openCameraHardware() is 0 to N-1.
  */
 
-using android::HAL_getNumberOfCameras;
-
 struct qcom_mdp_rect {
     uint32_t x;
     uint32_t y;
@@ -389,11 +387,15 @@ namespace android {
     
     extern "C" int get_number_of_cameras(void)
     {
-        //LOGE("get_number_of_cameras:");
-        //return 1;
+        LOGE("get_number_of_cameras:");
+#ifdef HTC_FFC
+        return 2;
+#else
+        return 1;
+#endif
         
-        LOGE("Q%s: E", __func__);
-        return android::HAL_getNumberOfCameras( );
+        //LOGE("Q%s: E", __func__);
+        //return android::HAL_getNumberOfCameras( );
     }
     
     extern "C" int get_camera_info(int camera_id, struct camera_info *info)
