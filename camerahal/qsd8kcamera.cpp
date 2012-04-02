@@ -76,7 +76,7 @@ struct blitreq {
 };
 
 /* Prototypes and extern functions. */
-extern "C" android::sp<android::CameraHardwareInterface> HAL_openCameraHardware(int id);
+extern "C" android::sp<android::CameraHardwareInterface> openCameraHardware(int id);
 
 /* Global variables. */
 camera_notify_callback         origNotify_cb    = NULL;
@@ -389,7 +389,7 @@ namespace android {
     {
         LOGE("get_number_of_cameras:");
 #ifdef HTC_FFC
-        return 2;
+        return 1;
 #else
         return 1;
 #endif
@@ -415,7 +415,7 @@ namespace android {
         LOGE("camera_device_open: name:%s device:%p cameraId:%d\n", 
              name, device, cameraId);
         
-        qCamera = HAL_openCameraHardware(cameraId);
+        qCamera = openCameraHardware(cameraId);
         camera_device_t* camera_device = NULL;
         camera_device_ops_t* camera_ops = NULL;
 
