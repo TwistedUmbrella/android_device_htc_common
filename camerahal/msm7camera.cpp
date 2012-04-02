@@ -386,16 +386,17 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
     const char *preferred_rate = "30";
+    const char *frame_rate_range = "(15,30)";
 
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
 
-    camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
+    camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
                   preferred_size);
 
-    camParams.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
-    camParams.set(CameraParameters::KEY_MAX_CONTRAST, "10");
-    camParams.set(CameraParameters::KEY_MAX_SATURATION, "10");
+    camParams.set(android::CameraParameters::KEY_MAX_SHARPNESS, "30");
+    camParams.set(android::CameraParameters::KEY_MAX_CONTRAST, "10");
+    camParams.set(android::CameraParameters::KEY_MAX_SATURATION, "10");
     camParams.set("num-snaps-per-shutter", "1");
 
     if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
@@ -404,8 +405,13 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     }
 
     if (!camParams.get(android::CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
-        camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_rate);
+        camParams.set(android::CameraParameters::KEY_PREVIEW_FRAME_RATE,
+                      preferred_rate);
     }
+
+    if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
+        camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE,
+                      frame_rate_range);
 }
 
 int camera_set_preview_window(struct camera_device * device,
