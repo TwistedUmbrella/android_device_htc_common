@@ -24,15 +24,6 @@
 #include <camera/Camera.h>
 #include <camera/CameraParameters.h>
 
-#ifdef CAF_PARAMS
-struct str_map {
-    const char *const desc;
-    int val;
-};
-#define TRUE (1)
-#define FALSE (0)
-#endif
-
 namespace android {
 
 class Overlay;

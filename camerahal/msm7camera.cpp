@@ -377,48 +377,12 @@ static void wrap_data_callback_timestamp(nsecs_t timestamp, int32_t msg_type,
 
 }
 
-#ifdef CAF_PARAMS
-static String8 create_values_str(const str_map *values, int len) {
-    String8 str;
-
-    if (len > 0) {
-        str.append(values[0].desc);
-    }
-    for (int i = 1; i < len; i++) {
-        str.append(",");
-        str.append(values[i].desc);
-    }
-    return str;
-}
-#endif
-
 /*******************************************************************
  * implementation of priv_camera_device_ops functions
  *******************************************************************/
 
 void CameraHAL_FixupParams(android::CameraParameters &camParams)
 {
-#ifdef CAF_PARAMS
-    camParams.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
-    camParams.set(CameraParameters::KEY_MAX_CONTRAST, "10");
-    camParams.set(CameraParameters::KEY_MAX_SATURATION, "10");
-    camParams.set("num-snaps-per-shutter", "1");
-    camParams.set("zoom-supported", "true");
-    camParams.set("video-zoom-support", "true");
-    camParams.set("video-stabilization-supported", "true");
-    camParams.set("capture-burst-interval-supported", "false");
-    /* Extended parameters for camera
-     static String8 touchafaec_values;
-     static const str_map touchafaec[] = {
-     { CameraParameters::TOUCH_AF_AEC_OFF, FALSE },
-     { CameraParameters::TOUCH_AF_AEC_ON, TRUE }
-     };
-     touchafaec_values = create_values_str(touchafaec, sizeof(touchafaec)/sizeof(str_map));
-     camParams.set(CameraParameters::KEY_SUPPORTED_TOUCH_AF_AEC, touchafaec_values);
-     camParams.set("touchAfAec-dx","100");
-     camParams.set("touchAfAec-dy","100");
-     */
-#endif
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
     const char *preferred_rate = "30";
@@ -428,6 +392,11 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
 
     camParams.set(CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO,
                   preferred_size);
+
+    camParams.set(CameraParameters::KEY_MAX_SHARPNESS, "30");
+    camParams.set(CameraParameters::KEY_MAX_CONTRAST, "10");
+    camParams.set(CameraParameters::KEY_MAX_SATURATION, "10");
+    camParams.set("num-snaps-per-shutter", "1");
 
     if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
         camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES,
