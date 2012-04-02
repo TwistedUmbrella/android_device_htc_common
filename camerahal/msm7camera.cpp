@@ -408,6 +408,7 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
 
     if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE)) {
         camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE, frame_rate_range);
+    }
 }
 
 int camera_set_preview_window(struct camera_device * device,
