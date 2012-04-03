@@ -384,15 +384,40 @@ namespace android {
             }
         }
     }
+
+#ifdef HTC_FFC
+#define HTC_SWITCH_CAMERA_FILE_PATH "/sys/android_camera2/htcwc"
+
+static int getNumberOfCameras() {
+    if (access(HTC_SWITCH_CAMERA_FILE_PATH, W_OK) == 0) {
+        return 2;
+    }
+    /* FIXME: Support non-HTC front camera */
+    return 1;
+}
+
+extern "C" int HAL_getNumberOfCameras()
+{
+    return getNumberOfCameras();
+}
+
+extern "C" void HAL_getCameraInfo(int cameraId, struct CameraInfo* cameraInfo)
+{
+    memcpy(cameraInfo, &sCameraInfo[cameraId], sizeof(CameraInfo));
+}
+
+extern "C" sp<CameraHardwareInterface> HAL_openCameraHardware(int cameraId)
+{
+    LOGV("openCameraHardware: call createInstance");
+    return openCameraHardware(cameraId);
+}
+
+#else
     
     extern "C" int get_number_of_cameras(void)
     {
         LOGE("get_number_of_cameras:");
-#ifdef HTC_FFC
         return 1;
-#else
-        return 1;
-#endif
         
         //LOGE("Q%s: E", __func__);
         //return android::HAL_getNumberOfCameras( );
@@ -405,6 +430,8 @@ namespace android {
         info->orientation = 90;
         return NO_ERROR;
     }
+
+#endif
     
     extern "C" int camera_device_open(const hw_module_t* module, const char* name,
                                       hw_device_t** device)
