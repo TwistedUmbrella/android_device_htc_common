@@ -403,7 +403,7 @@ extern "C" int HAL_getNumberOfCameras()
 
 extern "C" void HAL_getCameraInfo(int cameraId, struct CameraInfo* cameraInfo)
 {
-    memcpy(cameraInfo, &sCameraInfo[cameraId], sizeof(CameraInfo));
+    memcpy(cameraInfo, &CameraInfo[cameraId], sizeof(CameraInfo));
 }
 
 extern "C" sp<CameraHardwareInterface> HAL_openCameraHardware(int cameraId)
