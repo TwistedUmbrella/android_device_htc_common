@@ -462,10 +462,11 @@ int camera_set_preview_window(struct camera_device * device,
     const char *str_preview_format = params.getPreviewFormat();
     LOGI("%s: preview format %s", __FUNCTION__, str_preview_format);
 
-    /*if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_MASK)) {
-        LOGE("%s---: could not set usage on gralloc buffer", __FUNCTION__);
-        return -1;
-    }*/
+    // Enable panorama without camera application "hacks"
+    //if (window->set_usage(window, GRALLOC_USAGE_SW_WRITE_MASK)) {
+    //    LOGE("%s---: could not set usage on gralloc buffer", __FUNCTION__);
+    //    return -1;
+    //}
 
     window->set_usage(window, GRALLOC_USAGE_PMEM_PRIVATE_ADSP | GRALLOC_USAGE_SW_READ_OFTEN);
 
