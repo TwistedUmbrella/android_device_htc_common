@@ -387,6 +387,7 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
 {
     const char *preferred_size = "640x480";
     const char *preview_frame_rates  = "30,27,24,15";
+    const char *preferred_rate = "20";
 
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
@@ -400,22 +401,19 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
         camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
     }
 
-    if(strlen(prefer_video_size)>0)
-    {
+    if(strlen(prefer_video_size)>0) {
         camParams.set(CameraParameters::KEY_VIDEO_SIZE, prefer_video_size);
-    }
-    else
-    {
-        camParams.set(CameraParameters::KEY_VIDEO_SIZE, "640x480");
+    } else {
+        camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
     }
 
     camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, preferred_size);
 
-    if(strlen(prefer_frame_rate)>0)
+    if(strlen(prefer_frame_rate)>0) {
         camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, prefer_frame_rate);
-    else
-        camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, "20");
-
+    } else {
+        camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, preferred_rate);
+    }
 }
 
 int camera_set_preview_window(struct camera_device * device,
@@ -497,7 +495,7 @@ int camera_set_preview_window(struct camera_device * device,
                                 wrap_queue_buffer_hook,
                                 (void *)dev);
     gCameraHals[dev->cameraid]->setOverlay(dev->overlay);
-    LOGI("%s---,rv %d", __FUNCTION__,rv);
+    //LOGI("%s---,rv %d", __FUNCTION__,rv);
 
     return rv;
 }
@@ -829,10 +827,6 @@ int camera_set_parameters(struct camera_device * device, const char *params)
         //camParams.set(CameraParameters::KEY_PREVIEW_SIZE,
         //  prefer_video_size);//QiSS ME for 2.3 libcamera
     }
-    /*
-     *set video record rotation is 0 degree
-     */
-    camParams.set(CameraParameters::KEY_ROTATION, 0);
     
     if(camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE))
 		strcpy(prefer_frame_rate,camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE));
