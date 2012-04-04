@@ -31,7 +31,6 @@
 #include <ui/OverlayHtc.h>
 #include <camera/CameraParameters.h>
 #include <hardware/camera.h>
-#include <binder/IMemory.h>
 #include "msm7camera.h"
 #include <cutils/properties.h>
 
@@ -115,6 +114,9 @@ static struct {
     {0x0000, "CAMERA_MSG_ALL_MSGS"}, //0xFFFF
     {0x0000, "NULL"},
 };
+
+static char  prefer_video_size[16]={0};
+static char  prefer_frame_rate[16]={0};
 
 static void dump_msg(const char *tag, int msg_type)
 {
@@ -389,8 +391,6 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     camParams.set(android::CameraParameters::KEY_VIDEO_FRAME_FORMAT,
                   android::CameraParameters::PIXEL_FORMAT_YUV420SP);
 
-    camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, preferred_size);
-
     camParams.set(android::CameraParameters::KEY_MAX_SHARPNESS, "30");
     camParams.set(android::CameraParameters::KEY_MAX_CONTRAST, "10");
     camParams.set(android::CameraParameters::KEY_MAX_SATURATION, "10");
@@ -399,6 +399,23 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
     if (!camParams.get(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES)) {
         camParams.set(android::CameraParameters::KEY_SUPPORTED_PREVIEW_FRAME_RATES, preview_frame_rates);
     }
+
+    if(strlen(prefer_video_size)>0)
+    {
+        camParams.set(CameraParameters::KEY_VIDEO_SIZE, prefer_video_size);
+    }
+    else
+    {
+        camParams.set(CameraParameters::KEY_VIDEO_SIZE, "640x480");
+    }
+
+    camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, preferred_size);
+
+    if(strlen(prefer_frame_rate)>0)
+        camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, prefer_frame_rate);
+    else
+        camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, "20");
+
 }
 
 int camera_set_preview_window(struct camera_device * device,
@@ -806,6 +823,19 @@ int camera_set_parameters(struct camera_device * device, const char *params)
 #if 0
     camParams.dump();
 #endif
+    if(camParams.get(CameraParameters::KEY_VIDEO_SIZE))
+    {
+		strcpy(prefer_video_size,camParams.get(CameraParameters::KEY_VIDEO_SIZE));
+        //camParams.set(CameraParameters::KEY_PREVIEW_SIZE,
+        //  prefer_video_size);//QiSS ME for 2.3 libcamera
+    }
+    /*
+     *set video record rotation is 0 degree
+     */
+    camParams.set(CameraParameters::KEY_ROTATION, 0);
+    
+    if(camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE))
+		strcpy(prefer_frame_rate,camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE));
 
     rv = gCameraHals[dev->cameraid]->setParameters(camParams);
 
