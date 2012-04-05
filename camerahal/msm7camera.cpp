@@ -821,15 +821,14 @@ int camera_set_parameters(struct camera_device * device, const char *params)
 #if 0
     camParams.dump();
 #endif
-    if(camParams.get(CameraParameters::KEY_VIDEO_SIZE))
-    {
+    if(camParams.get(CameraParameters::KEY_VIDEO_SIZE)) {
 		strcpy(prefer_video_size,camParams.get(CameraParameters::KEY_VIDEO_SIZE));
-        //camParams.set(CameraParameters::KEY_PREVIEW_SIZE,
-        //  prefer_video_size);//QiSS ME for 2.3 libcamera
+        //camParams.set(CameraParameters::KEY_PREVIEW_SIZE, prefer_video_size);
     }
     
-    if(camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE))
+    if(camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE)) {
 		strcpy(prefer_frame_rate,camParams.get(CameraParameters::KEY_PREVIEW_FRAME_RATE));
+    }
 
     rv = gCameraHals[dev->cameraid]->setParameters(camParams);
 
