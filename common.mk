@@ -27,10 +27,6 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 # Sets copy files for all HTC-specific device
 PRODUCT_COPY_FILES += device/htc/common/ecclist_for_mcc.conf:system/etc/ecclist_for_mcc.conf
 
-PRODUCT_COPY_FILES += \
-device/htc/common/system/etc/init.local.rc:system/etc/init.local.rc \
-device/htc/common/system/media/android_audio.mp3:system/media/android_audio.mp3
-
 # Get additional product configuration from the non-open-source
 # counterpart to this file, if it exists
 $(call inherit-product-if-exists, vendor/htc/common/common-vendor.mk)
