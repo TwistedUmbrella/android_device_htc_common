@@ -27,11 +27,19 @@
 #include <linux/msm_mdp.h>
 #include <gralloc_priv.h>
 
-#include "CameraHardwareInterface.h"
 /* include QCamera Hardware Interface Header*/
 #include "qsd8kcamera.h"
+#include "CameraHardwareInterface.h"
 //#include "QualcommCameraHardware.h"
-
+#define MAX_SUPPORTED_CAMERAS 2
+#ifdef HTC_FFC
+#define HTC_SWITCH_CAMERA_FILE_PATH "/sys/android_camera2/htcwc"
+#endif
+using android::CameraInfo;
+//using android::HAL_getCameraInfo;
+//using android::HAL_getNumberOfCameras;
+//using android::HAL_openCameraHardware;
+using android::CameraHardwareInterface;
 extern "C" {
 #include <sys/time.h>
 }
@@ -86,8 +94,8 @@ camera_request_memory          origCamReqMemory = NULL;
 
 android::CameraParameters camSettings;
 preview_stream_ops_t      *mWindow = NULL;
-android::sp<android::CameraHardwareInterface> qCamera;
-
+android::sp<android::CameraHardwareInterface> qCamera[MAX_SUPPORTED_CAMERAS];
+int currentid = 0;
 
 static hw_module_methods_t camera_module_methods = {
    open: camera_device_open
@@ -110,7 +118,23 @@ camera_module_t HAL_MODULE_INFO_SYM = {
   get_number_of_cameras: get_number_of_cameras,
   get_camera_info: get_camera_info,
 };
-
+typedef struct priv_camera_device {
+    camera_device_t base;
+    /* specific "private" data can go here (base.priv) */
+    int cameraid;
+    /* new world */
+    preview_stream_ops *window;
+    camera_notify_callback notify_callback;
+    camera_data_callback data_callback;
+    camera_data_timestamp_callback data_timestamp_callback;
+    camera_request_memory request_memory;
+    void *user;
+    /* old world*/
+    int preview_width;
+    int preview_height;
+//    sp<Overlay> overlay;
+    gralloc_module_t const *gralloc;
+} priv_camera_device_t;
 #if 0 //TODO: use this instead of declaring in camera_device_open
               it works fine with this but segfaults when
               closing the camera app, so that needs to be addressed.
@@ -332,7 +356,7 @@ static void cam_data_callback(int32_t msgType,
    LOGE("cam_data_callback: msgType:%d user:%p", msgType, user);
    if (msgType == CAMERA_MSG_PREVIEW_FRAME) {
       int32_t previewWidth, previewHeight;
-      CameraParameters hwParameters = qCamera->getParameters();
+      CameraParameters hwParameters = qCamera[currentid]->getParameters();
       hwParameters.getPreviewSize(&previewWidth, &previewHeight);
       CameraHAL_HandlePreviewData(dataPtr, mWindow, origCamReqMemory,
                                   previewWidth, previewHeight);
@@ -362,7 +386,7 @@ static void cam_data_callback_timestamp(nsecs_t timestamp,
          LOGE("cam_data_callback_timestamp: Posting data to client timestamp:%lld",
               systemTime());
          origDataTS_cb(timestamp, msgType, clientData, 0, user);
-         qCamera->releaseRecordingFrame(dataPtr);
+         qCamera[currentid]->releaseRecordingFrame(dataPtr);
       } else {
          LOGE("cam_data_callback_timestamp: ERROR allocating memory from client");
       }
@@ -372,9 +396,9 @@ static void cam_data_callback_timestamp(nsecs_t timestamp,
 extern "C" int get_number_of_cameras(void)
 {
    LOGE("get_number_of_cameras:");
-   return 1;
-
-//    LOGE("Q%s: E", __func__);
+//   return sizeof(qCamera) / sizeof(qCamera[0]);
+	return MAX_SUPPORTED_CAMERAS;
+    LOGE("Q%s: E", __func__);
 //    return android::HAL_getNumberOfCameras( );
 }
 
@@ -383,7 +407,25 @@ extern "C" int get_camera_info(int camera_id, struct camera_info *info)
    LOGE("get_camera_info:");
    info->facing      = CAMERA_FACING_BACK;
    info->orientation = 90;
+
+   if (camera_id == 1) {
+	info->facing = CAMERA_FACING_FRONT;
+	info->orientation = 270;
+	}
    return NO_ERROR;
+
+/*  CameraInfo cameraInfo;
+
+   // android::getCameraInfo(camera_id, &cameraInfo);
+
+    info->facing = cameraInfo.facing;
+    //info->orientation = cameraInfo.orientation;
+    if(info->facing == 1) {
+        info->orientation = 270;
+    } else {
+        info->orientation = 90;
+    }
+return NO_ERROR;*/
 }
 
 extern "C" int camera_device_open(const hw_module_t* module, const char* name,
@@ -395,12 +437,28 @@ extern "C" int camera_device_open(const hw_module_t* module, const char* name,
    LOGE("camera_device_open: name:%s device:%p cameraId:%d",
         name, device, cameraId);
 
-   qCamera = openCameraHardware(cameraId);
+   
    camera_device_t* camera_device = NULL;
    camera_device_ops_t* camera_ops = NULL;
 
    camera_device = (camera_device_t*)malloc(sizeof(*camera_device));
    camera_ops = (camera_device_ops_t*)malloc(sizeof(*camera_ops));
+   
+#ifdef HTC_FFC
+#define HTC_SWITCH_CAMERA_FILE_PATH "/sys/android_camera2/htcwc"
+
+        char htc_buffer[16];
+        int htc_fd;
+
+        if (access(HTC_SWITCH_CAMERA_FILE_PATH, W_OK) == 0) {
+            LOGI("Switching to HTC Camera: %d, %s", cameraId, name);
+            snprintf(htc_buffer, sizeof(htc_buffer), "%d", cameraId);
+            htc_fd = open(HTC_SWITCH_CAMERA_FILE_PATH, O_WRONLY);
+            write(htc_fd, htc_buffer, strlen(htc_buffer));
+            close(htc_fd);
+        }
+#endif
+
    memset(camera_device, 0, sizeof(*camera_device));
    memset(camera_ops, 0, sizeof(*camera_ops));
 
@@ -409,7 +467,7 @@ extern "C" int camera_device_open(const hw_module_t* module, const char* name,
    camera_device->common.module           = (hw_module_t *)(module);
    camera_device->common.close            = close_camera_device;
    camera_device->ops                     = camera_ops;
-
+   //camera_device->common.module->id	  = name;
    camera_ops->set_preview_window         = set_preview_window;
    camera_ops->set_callbacks              = set_callbacks;
    camera_ops->enable_msg_type            = enable_msg_type;
@@ -436,6 +494,8 @@ extern "C" int camera_device_open(const hw_module_t* module, const char* name,
    camera_ops->dump                       = dump;
 
    *device = &camera_device->common;
+currentid = cameraId;
+qCamera[cameraId] = openCameraHardware(cameraId);
    return NO_ERROR;
 }
 
@@ -447,8 +507,8 @@ extern "C" int close_camera_device(hw_device_t* device)
    if (cameraDev) {
       camera_device_ops_t *camera_ops = cameraDev->ops;
       if (camera_ops) {
-         if (qCamera != NULL) {
-            qCamera.clear();
+         if (qCamera[currentid] != NULL) {
+            qCamera[currentid].clear();
          }
          free(camera_ops);
       }
@@ -461,6 +521,7 @@ extern "C" int close_camera_device(hw_device_t* device)
 int set_preview_window(struct camera_device * device,
                            struct preview_stream_ops *window)
 {
+
    LOGE("set_preview_window : Window :%p", window);
    if (device == NULL) {
       LOGE("set_preview_window : Invalid device.");
@@ -486,26 +547,28 @@ void set_callbacks(struct camera_device * device,
    origData_cb      = data_cb;
    origDataTS_cb    = data_cb_timestamp;
    origCamReqMemory = get_memory;
-   qCamera->setCallbacks(cam_notify_callback, cam_data_callback,
+//camera_common.id
+
+qCamera[currentid]->setCallbacks(cam_notify_callback, cam_data_callback,
                          cam_data_callback_timestamp, user);
 }
 
 void enable_msg_type(struct camera_device * device, int32_t msg_type)
 {
    LOGE("enable_msg_type: msg_type:%d", msg_type);
-   qCamera->enableMsgType(msg_type);
+   qCamera[currentid]->enableMsgType(msg_type);
 }
 
 void disable_msg_type(struct camera_device * device, int32_t msg_type)
 {
    LOGE("disable_msg_type: msg_type:%d", msg_type);
-   qCamera->disableMsgType(msg_type);
+   qCamera[currentid]->disableMsgType(msg_type);
 }
 
 int msg_type_enabled(struct camera_device * device, int32_t msg_type)
 {
    LOGE("msg_type_enabled: msg_type:%d", msg_type);
-   return qCamera->msgTypeEnabled(msg_type);
+   return qCamera[currentid]->msgTypeEnabled(msg_type);
 }
 
 int start_preview(struct camera_device * device)
@@ -513,8 +576,8 @@ int start_preview(struct camera_device * device)
    LOGE("start_preview: Enabling CAMERA_MSG_PREVIEW_FRAME");
 
    /* TODO: Remove hack. */
-   qCamera->enableMsgType(CAMERA_MSG_PREVIEW_FRAME);
-   return qCamera->startPreview();
+   qCamera[currentid]->enableMsgType(CAMERA_MSG_PREVIEW_FRAME);
+   return qCamera[currentid]->startPreview();
 }
 
 void stop_preview(struct camera_device * device)
@@ -522,14 +585,14 @@ void stop_preview(struct camera_device * device)
    LOGE("stop_preview:");
 
    /* TODO: Remove hack. */
-   qCamera->disableMsgType(CAMERA_MSG_PREVIEW_FRAME);
-   return qCamera->stopPreview();
+   qCamera[currentid]->disableMsgType(CAMERA_MSG_PREVIEW_FRAME);
+   return qCamera[currentid]->stopPreview();
 }
 
 int preview_enabled(struct camera_device * device)
 {
    LOGE("preview_enabled:");
-   return qCamera->previewEnabled() ? 1 : 0;
+   return qCamera[currentid]->previewEnabled() ? 1 : 0;
 }
 
 int store_meta_data_in_buffers(struct camera_device * device, int enable)
@@ -543,8 +606,8 @@ int start_recording(struct camera_device * device)
    LOGE("start_recording");
 
    /* TODO: Remove hack. */
-   qCamera->enableMsgType(CAMERA_MSG_VIDEO_FRAME);
-   qCamera->startRecording();
+   qCamera[currentid]->enableMsgType(CAMERA_MSG_VIDEO_FRAME);
+   qCamera[currentid]->startRecording();
    return NO_ERROR;
 }
 
@@ -553,14 +616,14 @@ void stop_recording(struct camera_device * device)
    LOGE("stop_recording:");
 
    /* TODO: Remove hack. */
-   qCamera->disableMsgType(CAMERA_MSG_VIDEO_FRAME);
-   qCamera->stopRecording();
+   qCamera[currentid]->disableMsgType(CAMERA_MSG_VIDEO_FRAME);
+   qCamera[currentid]->stopRecording();
 }
 
 int recording_enabled(struct camera_device * device)
 {
    LOGE("recording_enabled:");
-   return (int)qCamera->recordingEnabled();
+   return (int)qCamera[currentid]->recordingEnabled();
 }
 
 void release_recording_frame(struct camera_device * device,
@@ -576,14 +639,14 @@ void release_recording_frame(struct camera_device * device,
 int auto_focus(struct camera_device * device)
 {
    LOGE("auto_focus:");
-   qCamera->autoFocus();
+   qCamera[currentid]->autoFocus();
    return NO_ERROR;
 }
 
 int cancel_auto_focus(struct camera_device * device)
 {
    LOGE("cancel_auto_focus:");
-   qCamera->cancelAutoFocus();
+   qCamera[currentid]->cancelAutoFocus();
    return NO_ERROR;
 }
 
@@ -592,19 +655,19 @@ int take_picture(struct camera_device * device)
    LOGE("take_picture:");
 
    /* TODO: Remove hack. */
-   qCamera->enableMsgType(CAMERA_MSG_SHUTTER |
+   qCamera[currentid]->enableMsgType(CAMERA_MSG_SHUTTER |
                          CAMERA_MSG_POSTVIEW_FRAME |
                          CAMERA_MSG_RAW_IMAGE |
                          CAMERA_MSG_COMPRESSED_IMAGE);
 
-   qCamera->takePicture();
+   qCamera[currentid]->takePicture();
    return NO_ERROR;
 }
 
 int cancel_picture(struct camera_device * device)
 {
    LOGE("cancel_picture:");
-   qCamera->cancelPicture();
+   qCamera[currentid]->cancelPicture();
    return NO_ERROR;
 }
 
@@ -615,7 +678,7 @@ int set_parameters(struct camera_device * device, const char *params)
    LOGE("set_parameters: %s", params);
    g_str = String8(params);
    camSettings.unflatten(g_str);
-   qCamera->setParameters(camSettings);
+   qCamera[currentid]->setParameters(camSettings);
    return NO_ERROR;
 }
 
@@ -623,14 +686,26 @@ char * get_parameters(struct camera_device * device)
 {
    char *rc = NULL;
    LOGE("get_parameters");
-   camSettings = qCamera->getParameters();
+   camSettings = qCamera[currentid]->getParameters();
    LOGE("get_parameters: after calling qCamera->getParameters()");
    CameraHAL_FixupParams(camSettings);
    g_str = camSettings.flatten();
    rc = strdup((char *)g_str.string());
-   LOGE("get_parameters: returning rc:%p :%s",
+  
+#ifdef HTC_FFC
+    if (currentid == 1) {
+#ifdef REVERSE_FFC
+        /* Change default parameters for the front camera */
+        camSettings.set("front-camera-mode", "reverse"); // default is "mirror"
+#endif
+    } else {
+        camSettings.set("front-camera-mode", "mirror");
+    }
+#endif   
+ LOGE("get_parameters: returning rc:%p :%s",
         rc, (rc != NULL) ? rc : "EMPTY STRING");
-   return rc;
+
+return rc;
 }
 
 void put_parameters(struct camera_device *device, char *params)
@@ -651,14 +726,14 @@ int send_command(struct camera_device * device, int32_t cmd,
 void release(struct camera_device * device)
 {
    LOGE("release:");
-   qCamera->release();
+   qCamera[currentid]->release();
 }
 
 int dump(struct camera_device * device, int fd)
 {
    LOGE("dump:");
    Vector<String16> args;
-   return qCamera->dump(fd, args);
+   return qCamera[currentid]->dump(fd, args);
 }
 
 }; // namespace android

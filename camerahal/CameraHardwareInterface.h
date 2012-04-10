@@ -232,10 +232,10 @@ public:
  * If getNumberOfCameras() returns N, the valid cameraId for getCameraInfo()
  * and openCameraHardware() is 0 to N-1.
  */
-extern "C" int HAL_getNumberOfCameras();
-extern "C" void HAL_getCameraInfo(int cameraId, struct CameraInfo* cameraInfo);
+extern "C" int getNumberOfCameras();
+extern "C" void getCameraInfo(int cameraId, struct CameraInfo* cameraInfo);
 /* HAL should return NULL if it fails to open camera hardware. */
-extern "C" sp<CameraHardwareInterface> HAL_openCameraHardware(int cameraId);
+extern "C" sp<CameraHardwareInterface> openCameraHardware(int cameraId);
 
 };  // namespace android
 
