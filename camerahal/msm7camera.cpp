@@ -407,7 +407,9 @@ void CameraHAL_FixupParams(android::CameraParameters &camParams)
         camParams.set(CameraParameters::KEY_VIDEO_SIZE, preferred_size);
     }
 
-    camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, preferred_size);
+    if (!camParams.get(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO)) {
+        camParams.set(android::CameraParameters::KEY_PREFERRED_PREVIEW_SIZE_FOR_VIDEO, preferred_size);
+    }
 
     if(strlen(prefer_frame_rate)>0) {
         camParams.set(CameraParameters::KEY_PREVIEW_FRAME_RATE, prefer_frame_rate);
