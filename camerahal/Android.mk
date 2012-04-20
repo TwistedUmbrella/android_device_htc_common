@@ -35,7 +35,9 @@ endif
 ifeq ($(BOARD_USE_REVERSE_FFC), true)
     LOCAL_CFLAGS += -DREVERSE_FFC
 endif
-
+ifeq ($(BOARD_HAVE_CAM_QSD8K), true)
+    LOCAL_CFLAGS += -DCAM_QSD8K
+endif
 include $(BUILD_SHARED_LIBRARY)
 
 endif
