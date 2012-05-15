@@ -20,10 +20,15 @@ LOCAL_C_INCLUDES := frameworks/base/services \
                     frameworks/base/include \
                     hardware/libhardware/include \
                     hardware/qcom/display/libgralloc
-
+ifeq ($(TARGET_BOARD_PLATFORM),msm7x30 msm8660)
 LOCAL_SHARED_LIBRARIES := liblog libutils libcutils libbinder
 LOCAL_SHARED_LIBRARIES += libui libhardware libcamera_client
 LOCAL_SHARED_LIBRARIES += libcamera
+endif
+ifeq ($(TARGET_BOARD_PLATFORM),qsd8k)
+LOCAL_SHARED_LIBRARIES := liblog libdl libutils libcamera_client libbinder \
+                          libcutils libhardware libui libcamera
+endif
 ifeq ($(TARGET_BOARD_PLATFORM),msm8660)
   LOCAL_SHARED_LIBRARIES += libcameraLN libcameraSP
 endif
