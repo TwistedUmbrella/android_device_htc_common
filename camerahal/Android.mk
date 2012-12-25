@@ -38,6 +38,9 @@ endif
 ifeq ($(BOARD_USE_REVERSE_FFC), true)
     LOCAL_CFLAGS += -DREVERSE_FFC
 endif
+ifeq ($(TARGET_INVERSE_ROTATE), true)
+    LOCAL_CFLAGS += -DINVERSE_ORIENTATION
+endif
 ifeq ($(BOARD_HAVE_CAM_QSD8K), true)
     LOCAL_CFLAGS += -DCAM_QSD8K
 endif
