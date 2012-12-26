@@ -865,15 +865,16 @@ char* camera_get_parameters(struct camera_device * device)
 
 #ifdef HTC_FFC
     if (dev->cameraid == 1) {
+        camParams.set("front-camera-mode", "mirror");
 #ifdef REVERSE_FFC
         /* Change default parameters for the front camera */
         camParams.set("front-camera-mode", "reverse"); // default is "mirror"
 #endif
     } else {
-        camParams.set("front-camera-mode", "mirror");
+        camParams.set(CameraParameters::KEY_ZOOM_SUPPORTED,CameraParameters::TRUE);
+        camParams.set("orientation", "landscape");
     }
 #endif
-    camParams.set("orientation", "landscape");
 
     params_str8 = camParams.flatten();
     params = (char*) malloc(sizeof(char) * (params_str8.length()+1));
