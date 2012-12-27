@@ -873,6 +873,8 @@ char* camera_get_parameters(struct camera_device * device)
     } else {
         camParams.set(CameraParameters::KEY_ZOOM_SUPPORTED,CameraParameters::TRUE);
     }
+#endif
+#ifdef INVERSE_ORIENTATION
     camParams.set("orientation", "landscape");
 #endif
 
